@@ -1,14 +1,35 @@
-cell-fox (twilio / nexmo clone)
+cell-fox (twilio / nexmo / google voice clone)
 ========
 
 An SMS / MMS platform built on Node.js, Firefox OS, and the ZTE Open C.
 
-* Node.js Powers the webservice API (sms, mms, webhooks)
-* FxOS (Firefox OS) Powers the phone API (sms, mms, push notifications)
-* Open C / Flame GSM hardware can be used with T-Mobile (or whomever)
+* Node.js powers the webservice API (sms, mms, webhooks)
+* FxOS (Firefox OS) powers the phone API (sms, mms, push notifications)
+* Open C / Flame hardware can be used with T-Mobile (or any GSM/3g provider)
 
-Compatible Phones
+**Features**
 
-  * ZTE Open 
-  * ZTE Open C [< $70](http://www.ebay.com/sch/i.html?_nkw=firefox+zte)
-  * Flame (dual SIM, two numbers) [$170](https://developer.mozilla.org/en-US/Firefox_OS/Developer_phone_guide/Flame)
+* 20~60 messages per minute (limited by provider)
+* $35/month flat rate through T-Mobile
+* 1 number on ZTE phones, up to 2 numbers on Flame
+
+**Compatible Phones**
+
+* ZTE Open 
+* ZTE Open C [< $70](http://www.ebay.com/sch/i.html?_nkw=firefox+zte)
+* Flame [$170](https://developer.mozilla.org/en-US/Firefox_OS/Developer_phone_guide/Flame)
+
+**Current Progress**
+
+* https://github.com/coolaj86/fxos-push-notification-demo
+* https://github.com/coolaj86/fxos-sms-demo
+
+Installation
+=======
+
+TODO
+
+API
+====
+
+TODO
