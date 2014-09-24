@@ -1,0 +1,23 @@
+{ "name": "Push Demo"
+, "description": "Test Registering and Receiving Push Notifications"
+, "version": "1.0"
+, "type": "privileged"
+, "launch_path": "/index.html"
+, "developer": {
+    "name": "AJ ONeal"
+  , "url": "http://coolaj86.com"
+  }
+, "permissions": {
+    "systemXHR": {}
+  , "push": {
+      "description": "Get notifications, duh"
+    }
+  , "storage": {
+      "description": "To store whether or not the app is already registered for SimplePush"
+    }
+  },
+  "messages": [
+    { "push": "/index.html"}
+  , { "push-register": "/index.html"}
+  ]
+}

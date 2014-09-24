@@ -69,4 +69,4 @@ POST /api/accounts/:accountId/settings
 TODO
 
 * message templates
-* multiple 
+* multiple recipients

@@ -1,0 +1,84 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <title>Push Demo - Firefox OS</title>
+    <meta name="description" content="Simple Push Notification Demo for Firefox OS">
+    <!-- TODO: Verify Open Graph Tags-->
+    <!-- Canonical self-reference-->
+    <link rel="canonical" href="http://ffdemo.dev.coolaj86.com/">
+    <!-- Twitter Cards / Open Graph-->
+    <meta name="twitter:site", content="@coolaj86">
+    <meta name="twitter:creator", content="@coolaj86">
+    <meta property="og:url", content="http://ffdemo.dev.coolaj86.com/">
+    <meta property="og:title", content="Firefox OS Push Notification Demo">
+    <meta property="og:description", content="Simple Push Notification Demo for Firefox OS">
+    <meta property="og:image", content="https://s3.amazonaws.com/media-p.slid.es/thumbnails/franciscojordano/005171/firefox-os-push-notifications.jpg">
+
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+
+    <meta name="viewport" content="user-scalable=0, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+
+    <!-- build:css({.tmp,app}) styles/main.css -->
+    <link rel="stylesheet" href="styles/normalize.css">
+    <!-- See THEMES at http://www.bootstrapcdn.com/#bootswatch_tab -->
+    <!-- More THEMES at http://bootswatch.com/ -->
+    <link rel="stylesheet" href="styles/bootstrap.min.css">
+    <link rel="stylesheet" href="styles/main.css">
+    <!-- endbuild -->
+  </head>
+
+  <body ng-app="yololiumApp", style="padding-top: 1px;">
+    <!--[if lt IE 99]>
+      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+
+    <!--[if lt IE 9]>
+      <script src="bower_components/es5-shim/es5-shim.js"></script>
+      <script src="bower_components/json3/lib/json3.min.js"></script>
+    <![endif]-->
+
+    <div>
+      <!-- PASTE body.jade'S OUTPUT HERE -->
+
+
+
+<div class="container"><div class="row"><div class="col-xs-12"><h1>Push Notification Demo</h1><h3>for Firefox OS </h3></div></div><div class="row js-steps js-step-0"><div class="col-xs-12"><form class="js-form-ffpushinstruction form-horizontal"><fieldset><legend>Install the Push Demo app</legend><p><span>Install&#32;</span><a href="https://github.com/coolaj86/firefox-os-push-notification-demo" target="_ffpushapp">Push Demo</a><span>&#32;on your Firefox OS device.</span></p><div class="col-sm-3 col-md-2 pull-right"><input type="submit" value="Next" class="btn btn-primary form-control"/></div></fieldset></form></div></div><div class="row js-steps js-step-1"><div class="col-xs-12"><form class="js-form-ffpushid form-horizontal"><fieldset><legend>Enter your Registration ID</legend><div><label class="control-label">Registration ID</label><input type="text" name="friendly-id" class="form-control"/><div class="help-block">The ID will be something silly, like 'tricky-chicken-42'</div></div><div class="col-sm-3 col-md-2 pull-right"><input type="submit" value="Next" class="btn btn-primary form-control"/></div></fieldset></form></div></div><div class="row js-steps js-step-2"><div class="col-xs-12"><form class="js-form-ffpushdata form-horizontal"><fieldset><legend>Enter the data you would like to retrieve on push</legend><div><label class="control-label">Version</label><input class="form-control" name="version" type="number" min="0" max="1000" value="0"/></div><div><label class="control-label">Data</label><textarea type="text" rows="5" name="data" class="form-control">{ "foo": "bar"
+, "baz": 42
+, "ts": null
+}</textarea><div class="help-block">Generally you'd want this to be json</div></div><h3>cURL Push Example</h3><div class="js-steps js-push-example"><pre><code></code></pre></div><div class="col-sm-3 col-md-2 pull-right"><input type="submit" value="Send Push" class="btn btn-primary form-control"/></div></fieldset></form></div></div><div class="row js-steps js-console"><div class="col-xs-12"><pre><code><div class="js-console-data"></div></code></pre></div></div></div>
+
+    </div>
+
+    <script src="scripts/jquery-2.1.1.js"></script>
+
+    <!-- build:js scripts/plugins.js -->
+    <!-- endbuild -->
+
+    <!-- build:js scripts/modules.js -->
+    <!-- endbuild -->
+
+    <!-- build:js({.tmp,app}) scripts/scripts.js -->
+    <script src="scripts/app.js"></script>
+    <!-- endbuild -->
+
+    <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-42802552-6', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+</body>
+</html>

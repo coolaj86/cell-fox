@@ -1,0 +1,41 @@
+html
+  head
+    title Push Demo - Firefox OS
+    meta(name='viewport', content='user-scalable=0, initial-scale=1.0')
+    meta(charset="utf-8")
+    meta(http-equiv="Content-Type" content="text/html; charset=utf-8")
+    script(src='js/jquery.min.js', type='text/javascript', charset='utf-8')
+    script(src='js/pouchdb-2.2.3.min.js', type='text/javascript', charset='utf-8')
+    script(src='js/aj-logger.js', type='text/javascript', charset='utf-8')
+    script(src='js/app.js', type='text/javascript', charset='utf-8')
+    link(href='css/bootstrap.min.css', rel='stylesheet')
+  body
+    .container
+      .row
+        .col-xs-12
+          h1 AJ's Push Test
+          form.form-horizontal#push-form
+            fieldset
+              button.btn.btn-primary.form-control(type='submit') Register for Push Notifications
+      .row
+        .col-xs-6
+          button.btn.btn-danger.form-control(type='button' name="reset") Reset Registration
+      .row
+        .col-xs-12.js-test-site-container
+          span Go to&#32;
+          a.js-test-site(href="http://ffpush.dev.coolaj86.com/" target="_home_base") http://ffpush.dev.coolaj86.com/
+          span &#32;to test your push notification or&#32;
+          button.btn.btn-default.js-try-push(type="button") Push Now
+      .row
+        .col-xs-12
+          h3 Debug Console
+      .row
+        .col-xs-9
+          .help-block.pull-left Because sometimes the built-in debbuger doesn't work...
+        .col-xs-3
+          button#console-clear.btn.btn-default(type="button") Clear
+      .row
+        .col-xs-12
+          pre
+            code
+              #console
