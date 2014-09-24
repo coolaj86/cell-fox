@@ -33,3 +33,40 @@ API
 ====
 
 TODO
+
+POST /api/accounts/:accountId/messages
+
+```javascript
+{ from: '+15557980123'
+, to: ['+15557980123']
+, body: '<= 160 characters of text' // (up to 1600 when MMS is specified)
+, mediaUrl: 'http://'
+, mms: false // set to true to use MMS
+, webhook: 'http://example.com/messages/incoming/'
+}
+````
+
+```javascript
+{ '+15557980123': { id: "abc123" }
+}
+```
+
+POST /api/accounts/:accountId/settings
+
+```javascript
+{ hooks:
+  { "*": // sms, mms, voice, voicemail, etc
+    { "*": // phone number
+      { "*": "http://example.com/numbers/:number/messages/:messageId/:type?sid=:sid" // status, incoming, etc
+      , status: "http://example.com/messages/:messageId/status"
+      , incoming: "http://example.com/messages/:messageId"
+      }
+    }
+  }
+}
+```
+
+TODO
+
+* message templates
+* multiple 
