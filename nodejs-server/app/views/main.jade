@@ -44,11 +44,11 @@
           label
             span Message (160 characters max)
           textarea.form-control(
-            ng-model="M.newMsg.text"
+            ng-model="M.newMsg.body"
           )
           div.alert(
-            ng-class="{ 'alert-warning': M.newMsg.text.length > 160, 'alert-info': !(M.newMsg.text.length > 160) }"
-          ) {{ 160 - M.newMsg.text.length }} left
+            ng-class="{ 'alert-warning': M.newMsg.body.length > 160, 'alert-info': !(M.newMsg.body.length > 160) }"
+          ) {{ 160 - M.newMsg.body.length }} left
 
           input.btn.btn-primary.form-control(type="submit" value="Send") 
 

@@ -87,7 +87,7 @@ angular.module('yololiumApp')
         console.log('send message response:');
         console.log(resp);
         if (!resp.data.error) {
-          scope.newMsg = {};
+          scope.newMsg.body += ' 1';
         }
       });
     };
