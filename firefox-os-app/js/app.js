@@ -38,8 +38,10 @@ $(function() {
   // TODO Promise
   var log = window.AjLogger.create('#console')
     , db = new window.PouchDB('settings')
-    , homeBase = 'http://ffpush.dev.coolaj86.com'
-    , home = homeBase + '/api/push'
+    , phoneNumber = '+15557890123'
+    , homeBase = 'http://cellfox.dev.coolaj86.com'
+    , payloadsUrl = homeBase + '/webhooks/phones' //':phoneId/data'
+    , registerUrl = homeBase +  '/webhooks/phones'
     //, home = 'https://u34hasta3bs5.runscope.net'
     ;
 
@@ -187,7 +189,7 @@ $(function() {
   // Register at our own server to use that url
   function registerHome(endpoint, oldUrl) {
     // TODO update server to keep friendlyId the same
-    $.post(home, { url: endpoint, previous: oldUrl }).then(
+    $.post(registerUrl, { url: endpoint, previous: oldUrl }).then(
       function (body) {
         db.get('push_endpoint', function (err, doc) {
           if (!doc || !doc.url) {
@@ -237,7 +239,7 @@ $(function() {
       log("retrieving... ");
       
       db.get('push_endpoint', function (err, doc) {
-        $.get(home + '/' + doc.friendlyId + '/data')
+        $.get(payloadsUrl + '/' + doc.friendlyId + '/data')
           .then(
             function () {
               log.clear();

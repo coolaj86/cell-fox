@@ -32,6 +32,10 @@
     <!-- More THEMES at http://bootswatch.com/ -->
     <link rel="stylesheet" href="styles/bootstrap.min.css">
     <link rel="stylesheet" href="styles/main.css">
+
+    <link rel="stylesheet" href="bower_components/angular-ui-select/dist/select.min.css">
+    <!-- link rel="stylesheet" href="bower_components/select2/select2.css" -->
+    <!-- link rel="stylesheet" href="bower_components/selectize/dist/css/selectize.default.css" -->
     <!-- endbuild -->
   </head>
 
@@ -45,28 +49,34 @@
       <script src="bower_components/json3/lib/json3.min.js"></script>
     <![endif]-->
 
-    <div>
-      <!-- PASTE body.jade'S OUTPUT HERE -->
+    <!-- Add your site or application content here -->
+    <span ui-view="nav" class="st-none" autoscroll="false"></span>
+    <div ui-view="body" autoscroll="false"></div>
+    <span ui-view="footer" autoscroll="false"></span>
 
-
-
-<div class="container"><div class="row"><div class="col-xs-12"><h1>Push Notification Demo</h1><h3>for Firefox OS </h3></div></div><div class="row js-steps js-step-0"><div class="col-xs-12"><form class="js-form-ffpushinstruction form-horizontal"><fieldset><legend>Install the Push Demo app</legend><p><span>Install&#32;</span><a href="https://github.com/coolaj86/firefox-os-push-notification-demo" target="_ffpushapp">Push Demo</a><span>&#32;on your Firefox OS device.</span></p><div class="col-sm-3 col-md-2 pull-right"><input type="submit" value="Next" class="btn btn-primary form-control"/></div></fieldset></form></div></div><div class="row js-steps js-step-1"><div class="col-xs-12"><form class="js-form-ffpushid form-horizontal"><fieldset><legend>Enter your Registration ID</legend><div><label class="control-label">Registration ID</label><input type="text" name="friendly-id" class="form-control"/><div class="help-block">The ID will be something silly, like 'tricky-chicken-42'</div></div><div class="col-sm-3 col-md-2 pull-right"><input type="submit" value="Next" class="btn btn-primary form-control"/></div></fieldset></form></div></div><div class="row js-steps js-step-2"><div class="col-xs-12"><form class="js-form-ffpushdata form-horizontal"><fieldset><legend>Enter the data you would like to retrieve on push</legend><div><label class="control-label">Version</label><input class="form-control" name="version" type="number" min="0" max="1000" value="0"/></div><div><label class="control-label">Data</label><textarea type="text" rows="5" name="data" class="form-control">{ "foo": "bar"
-, "baz": 42
-, "ts": null
-}</textarea><div class="help-block">Generally you'd want this to be json</div></div><h3>cURL Push Example</h3><div class="js-steps js-push-example"><pre><code></code></pre></div><div class="col-sm-3 col-md-2 pull-right"><input type="submit" value="Send Push" class="btn btn-primary form-control"/></div></fieldset></form></div></div><div class="row js-steps js-console"><div class="col-xs-12"><pre><code><div class="js-console-data"></div></code></pre></div></div></div>
-
-    </div>
-
-    <script src="scripts/jquery-2.1.1.js"></script>
+    <script src="bower_components/jquery/jquery.js"></script>
+    <script src="bower_components/angular/angular.js"></script>
 
     <!-- build:js scripts/plugins.js -->
+    <script src="bower_components/recase/recase.js"></script>
+    <script src="bower_components/angular-ui-select/dist/select.min.js"></script>
     <!-- endbuild -->
 
     <!-- build:js scripts/modules.js -->
+    <script src="bower_components/angular-resource/angular-resource.js"></script>
+    <script src="bower_components/angular-cookies/angular-cookies.js"></script>
+    <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+    <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+    <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+    <script src="scripts/services/st-api.js"></script>
     <!-- endbuild -->
 
     <!-- build:js({.tmp,app}) scripts/scripts.js -->
     <script src="scripts/app.js"></script>
+    <script src="scripts/services/st-config.js"></script>
+    <script src="scripts/controllers/main.js"></script>
+    <script src="scripts/controllers/nav.js"></script>
+    <script src="scripts/controllers/footer.js"></script>
     <!-- endbuild -->
 
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
@@ -78,7 +88,6 @@
 
       ga('create', 'UA-42802552-6', 'auto');
       ga('send', 'pageview');
-
     </script>
 </body>
 </html>

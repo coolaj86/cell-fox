@@ -1,99 +1,151 @@
-$(function () {
-  'use strict';
+'use strict';
 
-  var friendlyId
-    , unfriendlyUrl
-    ;
-
-  function getVersion() {
-    return parseInt($('.js-form-ffpushdata input[name="version"]').val(), 10);
-  }
-
-  function bumpVersion() {
-    var version = getVersion()
+angular.module('yololiumApp', [
+  'ngCookies'
+, 'ngResource'
+, 'ngSanitize'
+, 'ui.router'
+, 'ui.bootstrap'
+, 'ui.select'
+, 'steve'
+])
+  .config([
+    '$stateProvider'
+  , '$urlRouterProvider'
+  , '$httpProvider'
+  , 'uiSelectConfig'
+  , function (
+      $stateProvider
+    , $urlRouterProvider
+    , $httpProvider
+    , uiSelectConfig
+  ) {
+    var nav
+      , footer
       ;
 
-    $('.js-form-ffpushdata input[name="version"]').val(version + 1);
-    setVersion();
-  }
+    uiSelectConfig.theme = 'bootstrap';
 
-  function setVersion() {
-    var version = getVersion()
-      ;
+    // This identifies your website in the createToken call
+    //window.Stripe.setPublishableKey(StApi.stripe.publicKey);
 
-    $('.js-push-example code').text(
-      "curl '" + unfriendlyUrl + "' \\"
-      + "\n  -X PUT \\"
-      + "\n  -d 'version=" + version + "'"
-    );
-
-    return version;
-  }
-
-  $('body').on('submit', '.js-form-ffpushinstruction', function (ev) {
-    ev.preventDefault();
-    ev.stopPropagation();
-
-    $('.js-steps').hide();
-    $('.js-step-1').show();
-  });
-
-
-  $('body').on('submit', '.js-form-ffpushid', function (ev) {
-    ev.preventDefault();
-    ev.stopPropagation();
-
-    friendlyId = $('.js-form-ffpushid input').val().toLowerCase();
-
-    $.get('/api/push/' + friendlyId).then(function (data) {
-      if (data && data.exists) {
-        $('.js-steps').hide();
-        if (data.url) {
-          unfriendlyUrl = data.url;
-          $('.js-push-example').show();
-          setVersion();
-        }
-        $('.js-step-2').show();
-      } else {
-        window.alert('Invalid Id');
+    // IMPORTANT: (Issue #4)
+    // These funny arrays (in resolve) are neccessary because ui.router
+    // doesn't get properly mangled by ng-min
+    // See https://github.com/yeoman/generator-angular#minification-safe
+    nav = {
+      templateUrl: '/views/nav.html'
+    , controller: 'NavCtrl as N'
+    /*
+    , resolve: {
+        mySession: ['StSession', function (StSession) {
+          return StSession.get();
+        }]
       }
-    }, function () {
-      window.alert('Network Error');
+    */
+    };
+
+    footer = {
+      templateUrl: '/views/footer.html'
+    , controller: 'FooterCtrl as F'
+    };
+
+    //$locationProvider.html5Mode(true);
+
+    // Deal with missing trailing slash
+    $urlRouterProvider.rule(function($injector, $location) {
+      var path = $location.path(), search = $location.search()
+        ;
+
+      if (path[path.length - 1] === '/') {
+        return;
+      }
+
+      if (Object.keys(search).length === 0) {
+        return path + '/';
+      }
+
+      var params = []
+        ;
+
+      angular.forEach(search, function(v, k){
+        params.push(k + '=' + v);
+      });
+
+      return path + '/?' + params.join('&');
     });
-  });
+    $urlRouterProvider.otherwise('/');
 
-  $('body').on('submit', '.js-form-ffpushdata', function (ev) {
-    ev.preventDefault();
-    ev.stopPropagation();
-
-    var data = $('.js-form-ffpushdata textarea').val()
+    $stateProvider
+      .state('root', {
+        url: '/'
+      , views: {
+          nav: nav
+        , body: {
+            templateUrl: 'views/main.html'
+          , controller: 'MainCtrl as M'
+          /*
+          , resolve: {
+              mySession: ['StSession', function (StSession) {
+                console.log('hello world');
+                return StSession.get();
+              }]
+            }
+          */
+          }
+        , footer: footer
+        }
+      })
       ;
 
-    setVersion();
+    // alternatively, register the interceptor via an anonymous factory
+    $httpProvider.interceptors.push(function(/*$q*/) {
+      var recase = window.Recase.create({ exceptions: {} })
+        ;
 
-    try {
-      data = JSON.parse(data);
-    } catch(e) {
-      // ignore
-    }
-    
-    data = { data: data, version: getVersion() };
+      return {
+        'request': function (config) {
+          /*
+          if (!/.html/.test(config.url)) {
+            console.log('[$http] request');
+            console.log(config);
+            //console.log(config.method, config.url);
+          }
+          */
+          if (config.data
+              && !/^https?:\/\//.test(config.url)
+              && /json/.test(config.headers['Content-Type'])
+          ) {
+            config.data = recase.snakeCopy(config.data);
+          }
+          return config;
+        }
+      , 'requestError': function (rejection) {
+          //console.log('[$http] requestError');
+          //console.log(rejection);
+          return rejection;
+        }
+      , 'response': function (response) {
+          var config = response.config
+            ;
 
-    $.ajax({
-      url: '/api/push/' + friendlyId
-    , type: 'POST'
-    , contentType : 'application/json'
-    , data: JSON.stringify(data)
-    }).then(function (data) {
-      bumpVersion();
-      // TODO websocket updates
-      $('.js-console').show();
-      $('.js-console-data').append(JSON.stringify(data, null, '  '));
-      //$('.js-console-data').append('<div class="alert alert-success">Client received notification</div>');
+          // our own API is snake_case (to match webApi / ruby convention)
+          // but we convert to camelCase for javascript convention
+          if (!/^https?:\/\//.test(config.url) && /json/.test(response.headers('Content-Type'))) {
+            response.data = recase.camelCopy(response.data);
+          }
+          return response;
+        }
+      , 'responseError': function (rejection) {
+          //console.log('[$http] responseError');
+          //console.log(rejection);
+          return rejection;
+        }
+
+      };
     });
-  });
-
-
-  $('.js-steps').hide();
-  $('.js-step-0').show();
-});
+  }])
+  .run([function () {
+    console.log('Hello World');
+  }])
+  ;

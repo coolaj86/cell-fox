@@ -1,3 +1,6 @@
+nodejs-server/app/views/*.html
+nodejs-server/app/bower_components
+
 # Logs
 logs
 *.log

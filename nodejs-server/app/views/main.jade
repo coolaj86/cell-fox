@@ -1,0 +1,60 @@
+.container
+  .row
+    .col-xs-12
+      h1 Cellfox Message Manager
+
+  .row
+    .col-xs-12
+      form.form-horizontal(ng-submit="M.sendMessage()")
+        fieldset
+          legend Send Message
+
+          label
+            span From
+          select.form-control(
+            ng-model="M.newMsg.from"
+            ng-options="val.comment for val in M.phones"
+          )
+
+          label
+            span To
+          ui-select(
+            multiple
+            ng-model="M.newMsg.to"
+            ng-disabled="M.selectDisabled"
+            theme="bootstrap"
+          )
+            //- single selection
+              ui-select-match(
+                placeholder="Type a phone number..."
+              ) {{ $select.selected.number }}
+            //- multiple selection
+            ui-select-match(
+              placeholder="Type a phone number..."
+            ) {{ $item.number }}
+            ui-select-choices(
+              refresh="M.searchNumber($select.search)"
+              refresh-delay="30"
+              repeat="n in M.numbers | phoneNumFilter: $select.search"
+            )
+              div(ng-bind-html="n.number")
+              //-div(ng-bind-html="n.number | highlight: $select.search")
+              //-small(ng-bind-html="n.comment | highlight: $select.search")
+
+          label
+            span Message (160 characters max)
+          textarea.form-control(
+            ng-model="M.newMsg.text"
+          )
+          div.alert(
+            ng-class="{ 'alert-warning': M.newMsg.text.length > 160, 'alert-info': !(M.newMsg.text.length > 160) }"
+          ) {{ 160 - M.newMsg.text.length }} left
+
+          input.btn.btn-primary.form-control(type="submit" value="Send") 
+
+  h4 Console
+  .row.js-steps.js-console
+    .col-xs-12
+      pre
+        code
+          .js-console-data
