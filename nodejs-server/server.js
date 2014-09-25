@@ -60,7 +60,7 @@ function pushMessage(id, body) {
     return request(
       { method: 'PUT'
       , uri: url
-      , form: { version: body.version || 3 }
+      , form: { version: Date.now() }
       }
     ).spread(function (resp, data) {
       var p
@@ -79,7 +79,7 @@ function pushMessage(id, body) {
 
         // TODO what if there's a promise waiting?
         p = { resolve: resolve, reject: reject, id: id };
-        pushes[p.id]  = p;
+        pushes[p.id] = p;
         p.timeout = setTimeout(function () {
           p.reject({
             message: "push timeout:"
@@ -104,6 +104,7 @@ function pushMessage(id, body) {
 
         p.resolved = true;
         clearTimeout(p.timeout);
+        p.timeout = null;
         delete pushes[id];
       });
     });
@@ -115,7 +116,7 @@ function pushMessage(id, body) {
       throw new Error("Bad id");
     }
 
-    return pushdata(id, body.data).then( function () {
+    return pushdata(id, body.data || body).then( function () {
       return requestPush(url);
     });
   });
@@ -123,7 +124,7 @@ function pushMessage(id, body) {
 
 function routeDemo(rest) {
   //
-  // RESTful Push data from web to server
+  // RESTful Push data from web to server (and to phone)
   //
   rest.post('/api/push/:id', function (req, res) {
     var params = req.params
@@ -139,6 +140,8 @@ function routeDemo(rest) {
     });
   });
 
+  // Test if a phone is registered by id
+  // TODO check by number
   rest.get('/api/push/:id', function (req, res) {
     var params = req.params
       ;
@@ -160,11 +163,11 @@ function registerPush(body) {
     throw new Error("Missing url");
   }
   
-  if (!body.from) {
+  if (!body.number) {
     throw new Error("Missing phone number");
   }
 
-  poor.get(body.url).then(function (id) {
+  return poor.get(body.url).then(function (id) {
     if (id) {
       return id;
     }
@@ -177,7 +180,11 @@ function registerPush(body) {
           return getNewId();
         }
 
-        return Promise.all([poor.put(body.from, id), poor.put(body.url, id), poor.put(id, body.url)]).then(function () {
+        return Promise.all([
+          poor.put(body.number, id)
+        , poor.put(body.url, id)
+        , poor.put(id, body.url)
+        ]).then(function () {
           return id;
         });
       });
@@ -250,7 +257,7 @@ function route(rest) {
   // If the device received the USSD packet (push) that means
   // it also has a data connection and will be able to retrieve
   // the data which awaits it immediately. Here she be.
-  rest.get('/api/push/:id/data', function (req, res) {
+  function retrieveNotifications(req, res) {
     var id = req.params.id
       ;
 
@@ -283,7 +290,9 @@ function route(rest) {
     }).then(function () {
       pushes[id].lock = false;
     });
-  });
+  }
+  rest.get('/api/phones/notifications/:id', retrieveNotifications);
+  rest.get('/api/push/:id/data', retrieveNotifications);
 }
 
 app.use(urlrouter(route));
