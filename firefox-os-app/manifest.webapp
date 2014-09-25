@@ -1,7 +1,7 @@
-{ "name": "Push Demo"
-, "description": "Test Registering and Receiving Push Notifications"
+{ "name": "Cell Fox"
+, "description": "SMS Passthru"
 , "version": "1.0"
-, "type": "privileged"
+, "type": "certified"
 , "launch_path": "/index.html"
 , "developer": {
     "name": "AJ ONeal"
@@ -10,14 +10,21 @@
 , "permissions": {
     "systemXHR": {}
   , "push": {
-      "description": "Get notifications, duh"
+      "description": "Tell the phone there are new messages in queue."
     }
   , "storage": {
       "description": "To store whether or not the app is already registered for SimplePush"
     }
-  },
-  "messages": [
-    { "push": "/index.html"}
+  , "sms": {
+      "description": "You can send and receive text messages in this app."
+    }
+  , "alarms": {
+      "description": "We'll periodically retry to send failed messages. We'll also manually check for new messages since message API is buggy."
+    }
+  }
+, "messages": [
+    { "alarm": "/index.html" }
+  , { "push": "/index.html"}
   , { "push-register": "/index.html"}
   ]
 }

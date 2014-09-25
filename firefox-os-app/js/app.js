@@ -38,10 +38,10 @@ $(function() {
   // TODO Promise
   var log = window.AjLogger.create('#console')
     , db = new window.PouchDB('settings')
-    , phoneNumber = '+15557890123'
-    , homeBase = 'http://cellfox.dev.coolaj86.com'
-    , payloadsUrl = homeBase + '/webhooks/phones' //':phoneId/data'
-    , registerUrl = homeBase +  '/webhooks/phones'
+    , phoneNumber = '+18014713042'
+    , homeBase = 'http://cellfox.dev.coolaj86.com:8080'
+    , payloadsUrl = homeBase + '/api/phones/notifications' //':id'
+    , registerUrl = homeBase +  '/api/phones/push/register'
     //, home = 'https://u34hasta3bs5.runscope.net'
     ;
 
@@ -82,7 +82,6 @@ $(function() {
       doc.count += 1;
       log.clear();
       log('v' + doc.count + ': sending push...');
-
 
       log(
         "curl '" + doc.url + "' \\"
@@ -189,7 +188,7 @@ $(function() {
   // Register at our own server to use that url
   function registerHome(endpoint, oldUrl) {
     // TODO update server to keep friendlyId the same
-    $.post(registerUrl, { url: endpoint, previous: oldUrl }).then(
+    $.post(registerUrl, { url: endpoint, previous: oldUrl, number: phoneNumber }).then(
       function (body) {
         db.get('push_endpoint', function (err, doc) {
           if (!doc || !doc.url) {
@@ -214,7 +213,7 @@ $(function() {
         // NOTE: you may never get here because Firefox OS
         // doesn't send you data from non-200 requests
         log('error communicating with server', 'error');
-        log(err && err.message || err, 'error');
+        log(err && err.message || JSON.stringify(err), 'error');
       });
   }
 
@@ -227,27 +226,101 @@ $(function() {
     log(doc.url);
   }
 
+  function sendOneSms(body) {
+    log.clear();
+    log.log('[SMS activated]');
+    log.log(body.body);
+    body.to.forEach(function (to) {
+      var msg = body.body
+        , request = navigator.mozMobileMessage.send(to, msg)
+        ;
+
+      log.log('[sending] ' + to);
+      log.log(msg);
+      request.onsuccess = function () {
+        // TODO send confirm
+        log.log('[sent] ' + to);
+        log.log(this.result);
+      };
+      request.onerror = function () {
+        // TODO send error
+        log.error('[error] ' + to);
+        log.error(this.error.name + ':' + this.error.message);
+        log.error(JSON.stringify(this.error));
+        log.error(this.error.toString());
+      };
+
+    });
+  }
+
+  function sendSms(body) {
+    var msg = body.body
+      , requests
+      , to = body.to.map(function (to) { return to.replace(/\+1(\d{3})(\d{3})(\d{4})/, "$1-$2-$3"); })
+      ;
+
+    log.clear();
+    log.log('[SMS activated]');
+    log.log(body.body);
+
+    requests = navigator.mozMobileMessage.send(to, msg);
+    requests.forEach(function (request) {
+      log.log('[sending] to all');
+      log.log(msg);
+      request.onsuccess = function () {
+        // TODO send confirm
+        log.log('[sent] ' + Object.keys(this.result));
+        log.log(this.result);
+      };
+      request.onerror = function () {
+        // TODO send error
+        log.error('[error] ' + this.result);
+        log.error(this.error.name + ':' + this.error.message);
+        log.error(JSON.stringify(this.error));
+        log.error(this.error.toString());
+      };
+    });
+  }
 
   function listenForPush() {
     window.navigator.mozSetMessageHandler('push', function(ev) {
-      console.log('[push notification]');
-      console.log(ev);
-      log.clear();
+      //console.log('[push notification]');
+      //console.log(ev);
+      //log.clear();
       log('[push notification]');
       log('v' + ev.version);
       log('from ' + ev.pushEndpoint);
       log("retrieving... ");
       
       db.get('push_endpoint', function (err, doc) {
-        $.get(payloadsUrl + '/' + doc.friendlyId + '/data')
+        $.get(payloadsUrl + '/' + doc.friendlyId)
           .then(
-            function () {
-              log.clear();
-              log('[push notification] retrieved data:');
-              log(JSON.stringify(doc));
+            function (data) {
+              if (!data) {
+                log.error('NO DATA');
+                return;
+              }
+
+              if (!data.batch) {
+                log.error('NO BATCH');
+                log.error(JSON.stringify(data));
+                return;
+              }
+
+              //log.clear();
+              log.log('[push notification] retrieved data:');
+              log.log(JSON.stringify(data));
+              data.batch.forEach(function (data) {
+                if ('sms' === data.type) {
+                  // TODO POST to confirm
+                  sendSms(data);
+                  return;
+                }
+              });
             }
-          , function () {
+          , function (err) {
               log.error("failed to retrieve push data");
+              log.error(JSON.stringify(err));
             }
           );
       });

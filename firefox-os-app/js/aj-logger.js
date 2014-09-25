@@ -17,6 +17,7 @@ window.AjLogger = {
 
       $(id).prepend('<div class="alert alert-' + type + '">' + msg + '</div>');
     }
+    log.log = log;
     log.info = function (msg) {
       log(msg, 'success');
     };
